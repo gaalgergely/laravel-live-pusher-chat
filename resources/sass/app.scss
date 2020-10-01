@@ -6,3 +6,29 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+//custom CSS
+.display-user-wrapper, .communication-message-wrapper {
+    border: 1px solid #dddddd;
+    overflow-y: auto;
+}
+
+.display-user-wrapper {
+    height: 600px;
+}
+
+.one-user {
+    cursor: pointer;
+    padding: 5px;
+    position: relative;
+}
+
+.one-user:hover {
+    background: #eeeeee;
+}
+
+.pending-messages {
+    position: absolute;
+    left: 13px;
+    top: 9px;
+}
