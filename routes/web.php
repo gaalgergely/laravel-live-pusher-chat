@@ -20,3 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/communicationmessage/{id}', [App\Http\Controllers\HomeController::class, 'receivemessage'])->name('communicationmessage');
+
+Route::post('/communicationmessage', [App\Http\Controllers\HomeController::class, 'sendmessage']);

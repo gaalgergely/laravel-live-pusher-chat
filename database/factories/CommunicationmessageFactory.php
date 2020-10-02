@@ -23,8 +23,8 @@ class CommunicationmessageFactory extends Factory
     public function definition()
     {
         return [
-            'sender' => rand(1, 25),
-            'receiver' => rand(25, 50),
+            'sender' => rand(1, 10),
+            'receiver' => rand(1, 10),
             'communicationmessage' => $this->faker->paragraph,
             'is_viewed' => rand(0, 1)
         ];

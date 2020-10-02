@@ -9,7 +9,11 @@
 
                     @foreach($users as $user)
                     <li class="oneuser" id="{{ $user->id }}">
-                        <span class="pendingmessages">1</span>
+
+                        @if($user->unread)
+                            <span class="pendingmessages">{{ $user->unread }}</span>
+                        @endif
+
                         <div class="starmedia">
                             <div class="starmedia-left">
                                 <img src="{{ $user->image }}" alt="" class="media-objects">
@@ -24,10 +28,12 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-8" id="communicationmessages">
+        <div class="col-md-8">
+
+            <div id="communicationmessages"></div>
 
 
-            <div class="input-text">
+            <div class="text-input">
                 <input type="text" name="typemessage" class="submit">
             </div>
         </div>

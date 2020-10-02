@@ -76,13 +76,52 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="{{ asset('dist/js/jquery.min.js') }}"></script>
 
     <script>
         var rec_id = '';
-        var authuser = {{ auth()->user()->id }};
+        var authuser = {{ auth()->user()->id ?? false }};
 
         $(document).ready(function () {
+
+            $.ajaxSetup({
+                headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
+            });
+
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+
+            var pusher = new Pusher('77451f34b73e728d4bf0', {
+                cluster: 'eu'
+            });
+
+            var channel = pusher.subscribe('my-channel');
+            channel.bind('my-event', function(data) {
+                //alert(JSON.stringify(data));
+
+                if (authuser==data.sender) {
+                    //alert('authuseridsender');
+                    $('#' + data.receiver).click();
+
+                } else if (authuser==data.receiver) {
+                    if (rec_id==data.sender) {
+
+                        $('#' + data.sender).click();
+                    } else {
+
+                        var pendmess = parseInt($('#' + data.sender).find('.pendingmessages').html());
+
+                        if (pendmess) {
+
+                            $('#' + data.sender).find('.pending').html(pendmess + 1);
+                        } else {
+
+                            $('#' + data.sender).append('<span class="pendingmessages">1</span>');
+                        }
+                    }
+                }
+            });
 
             $('.oneuser').click(function () {
 
@@ -91,9 +130,56 @@
 
                 rec_id = $(this).attr('id');
 
-                alert(rec_id);
+                $.ajax({
+                    type: 'get',
+                    url: 'communicationmessage/' + rec_id,
+                    data: '',
+                    cache: false,
+                    success: function (data) {
+
+                        $('#communicationmessages').html(data);
+
+                        rolltobottom();
+                    }
+                });
             });
+
+            $(document).on('keyup', '.text-input input', function (e) {
+
+                var communicationmessage = $(this).val();
+
+                if (e.keyCode == 13 && communicationmessage!='' && rec_id) {
+
+                    $(this).val('');
+
+                    var datareceive = "rec_id=" + rec_id + "&communicationmessage=" + communicationmessage;
+
+                    $.ajax({
+                        type: 'post',
+                        'url': 'communicationmessage',
+                        data: datareceive,
+                        cache: false,
+                        success: function (data) {
+
+                        },
+                        error: function (jqXHR, status, err) {
+
+                        },
+
+                        complete: function () {
+                            rolltobottom();
+                        }
+                    });
+                }
+            })
         });
+
+        function rolltobottom () {
+            $('.communicationmessage-wrapper').animate({
+                scrollTo: $('.communicationmessage-wrapper').get(0).scrollHeight
+            }, 50)
+        }
+
     </script>
 </body>
 </html>
